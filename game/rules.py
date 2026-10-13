@@ -23,7 +23,7 @@ class Player:
         self.radius = 12
         self.hitbox_radius = 3
 
-        self.damage = 10
+        self.damage = 50
         self.lives = 3
 
         self.attack_cooldown = 0.05
@@ -105,15 +105,19 @@ class Player:
 # --------------------
 
 class Bullet:
-    def __init__(self, x, y, dx, dy):
+    def __init__(
+        self, x, y, dx, dy,
+        speed=10.0,
+        radius=3
+    ):
         self.x = x
         self.y = y
 
         self.dx = dx
         self.dy = dy
 
-        self.speed = 10.0
-        self.radius = 3
+        self.speed = speed
+        self.radius = radius
 
     def update(self):
         self.x += self.dx * self.speed
@@ -129,7 +133,6 @@ class Bullet:
 
     def get_hitbox(self):
         return (self.x, self.y, self.radius)
-
 
 # --------------------
 # Boss
@@ -156,6 +159,9 @@ class Boss:
 
     def get_hitbox(self):
         return (self.x, self.y, self.hitbox_radius)
+
+    def get_hp_ratio(self):
+        return self.healthPoints / self.max_health
 
 
 # --------------------
@@ -196,3 +202,10 @@ def check_boss_collision(player, boss):
     radius_sum = player.hitbox_radius + boss.hitbox_radius
 
     return distance_squared < radius_sum ** 2
+
+
+def score_counter(player, boss):
+    """Calculate the score based on the boss's health."""
+    count = int((1 - boss.get_hp_ratio()) * 100000)
+    return count
+

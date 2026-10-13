@@ -6,7 +6,8 @@ from game.rules import (
     Boss,
     check_collision,
     check_boss_collision,
-    check_bullet_boss_collision
+    check_bullet_boss_collision,
+    score_counter
 )
 
 pygame.init()
@@ -49,6 +50,8 @@ B_bullets = []
 
 running = True
 game_over = False
+
+last_boss_attack_time = 0
 
 # --------------------
 # Main game loop
@@ -130,6 +133,10 @@ while running:
             if player.lives <= 0:
                 game_over = True
 
+        if player.lives == 0 or boss.healthPoints <= 0:
+            final_score = score_counter(player, boss)
+            game_over = True
+
     # --------------------
     # Drawing
     # --------------------
@@ -185,7 +192,14 @@ while running:
         True,
         (255, 255, 255)
     )
+
+    Score_counter = font.render(
+        f"Score: {score_counter(player, boss)}",
+        True,
+        (255, 255, 255)
+    )
     screen.blit(boss_hp_text, (20, 60))
+    screen.blit(Score_counter, (20, 100))
 
     # Game over message
     if game_over:

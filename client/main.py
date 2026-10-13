@@ -8,6 +8,9 @@ pygame.init()
 SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 800
 
+G_FIELD_X = 960
+G_FIELD_Y = 800
+
 screen = pygame.display.set_mode(
     (SCREEN_WIDTH, SCREEN_HEIGHT)
 )
@@ -45,10 +48,17 @@ while running:
             screen,
             (255, 0, 0),
             (int(player.x), int(player.y)),
-            player.bullet_radius
+            player.bullet_hitbox()[2]
         )
+        player.update(bullets)
 
     # Drawing belongs in the client
+    gamefield = pygame.image.load("assets/derevenskij-ogorod.jpg").convert()
+    gamefield = pygame.transform.scale(
+    gamefield,
+    (SCREEN_WIDTH, SCREEN_HEIGHT)
+)
+    screen.blit(gamefield, (G_FIELD_X, G_FIELD_Y))
     screen.fill((15, 15, 25))
     pygame.draw.circle(
         screen,

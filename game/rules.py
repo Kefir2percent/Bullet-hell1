@@ -110,9 +110,8 @@ class Bullet:
         )
     def get_hitbox(self):
         return (self.x, self.y, self.radius)
+    
 
-    def clear_bullets(self, bullets):
-        bullets.clear()
 
 
 def check_collision(player, bullet):

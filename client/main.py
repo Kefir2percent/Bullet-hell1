@@ -64,6 +64,8 @@ while running:
 
     player.move(dx, dy, focused)
 
+    for bullet in P_bullets:
+        bullet.update()
 
     # Drawing belongs in the client
     screen.fill((15, 15, 25))
@@ -91,7 +93,7 @@ while running:
     if not player.Invaluability:
         if check_boss_collision(player, boss):
             player.take_damage()
-            player.clear_bullets(B_bullets)  # Clear all bullets when the player takes damage
+            B_bullets.clear()  # Clear all bullets when the player takes damage
             player.x = 640
             player.y = 480
             if player.lives <= 0:
@@ -111,6 +113,8 @@ while running:
             (int(bullet.x), int(bullet.y)),
             bullet.radius
         )
+        for bullet in P_bullets:
+            bullet.update()
 
     pygame.display.flip()
     clock.tick(60)

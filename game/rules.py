@@ -13,7 +13,7 @@ class Player:
         self.focus_speed = 2.5
         self.radius = 12
         self.hitbox_radius = 3
-        self.attack_cooldown = 0.2  # seconds
+        self.attack_cooldown = 0.05  # seconds
         self.last_attack_time = 0
         self.damage = 10
 
@@ -43,26 +43,26 @@ class Player:
     def get_hitbox(self):
         return (self.x, self.y, self.hitbox_radius)
 
-def attack(self, bullets):
-    current_time = time.time()
+    def attack(self, bullets):
+        current_time = time.time()
 
-    if current_time - self.last_attack >= self.attack_cooldown:
-        new_bullet = Bullet(self.x, self.y, 0, -1)
-        bullets.append(new_bullet)
-        self.last_attack = current_time
+        if current_time - self.last_attack >= self.attack_cooldown:
+            new_bullet = Bullet(self.x, self.y, 0, -1)
+            bullets.append(new_bullet)
+            self.last_attack = current_time
 
-    def update(self, bullets):
-        # Update bullets
-        for bullet in bullets:
-            bullet.update()
+        def update(self, bullets):
+            # Update bullets
+            for bullet in bullets:
+                bullet.update()
 
-        # Remove off-screen bullets
-        bullets[:] = [
-            bullet for bullet in bullets
-            if not bullet.is_off_screen()
-        ]
-    def bullet_hitbox(self):
-        return (self.x, self.y, self.radius)
+            # Remove off-screen bullets
+            bullets[:] = [
+                bullet for bullet in bullets
+                if not bullet.is_off_screen()
+            ]
+        def bullet_hitbox(self):
+            return (self.x, self.y, self.radius)
 
 class Bullet:
     def __init__(self, x, y, dx, dy):
@@ -89,12 +89,22 @@ class Bullet:
 
 
 def check_collision(player, bullet):
-    distance = math.sqrt(
-        (player.x - bullet.x) ** 2 +
-        (player.y - bullet.y) ** 2
+    distance_squared = (
+        (player.x - bullet.x) ** 2
+        + (player.y - bullet.y) ** 2
+    )
+    radius_sum = player.hitbox_radius + bullet.radius
+    return distance_squared < radius_sum ** 2
+
+def check_boss_collision(player, boss):
+    distance_squared = (
+        (player.x - boss.x) ** 2
+        + (player.y - boss.y) ** 2
     )
 
-    return distance < (player.hitbox_radius + bullet.radius)
+    radius_sum = player.hitbox_radius + boss.hitbox_radius
+    return distance_squared < radius_sum ** 2
+
 
 class Boss:
     def __init__(self, x, y):

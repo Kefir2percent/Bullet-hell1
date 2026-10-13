@@ -2,6 +2,8 @@ import pygame
 from game.rules import Player
 from game.rules import Bullet
 from game.rules import Boss
+from game.rules import check_collision
+from game.rules import check_boss_collision
 
 pygame.init()
 
@@ -26,13 +28,20 @@ boss_model = pygame.transform.scale(
     (64, 64)
 )
 
-bullets = []
+P_bullets = []
+B_bullets = []
 running = True
+game_over = False
 
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+
+    for bullet in B_bullets[:]:
+        if check_collision(player, bullet):
+            print("Player hit!")
+            B_bullets.remove(bullet)
 
     keys = pygame.key.get_pressed()
 
@@ -51,7 +60,7 @@ while running:
 
     player.move(dx, dy, focused)
     if attack:
-        player.attack(bullets)
+        player.attack(P_bullets)
         pygame.draw.circle(
             screen,
             (255, 0, 0),
@@ -77,6 +86,18 @@ while running:
             int(boss.y - boss_model.get_height() / 2)
         )
     )
+
+    if not game_over:
+        if check_boss_collision(player, boss):
+            game_over = True
+            print("You were hit by the boss!")
+
+    if game_over:
+        font = pygame.font.Font(None, 48)
+        text = font.render("YOU GOT HIT!", True, (255, 0, 0))
+        screen.blit(text, (500, 350))
+        player.x = 640
+        player.y = 480
 
     pygame.display.flip()
     clock.tick(60)

@@ -25,7 +25,7 @@ boss = Boss(640, 100)
 boss_model = pygame.image.load("assets/evil_boss1.png").convert_alpha()
 boss_model = pygame.transform.scale(
     boss_model,
-    (64, 64)
+    (100, 100)
 )
 
 P_bullets = []
@@ -56,17 +56,14 @@ while running:
         or keys[pygame.K_RSHIFT]
     )
 
-    attack = (keys[pygame.K_z])
+    if keys[pygame.K_z]:
+        player.attack(P_bullets)
+    
+
+
 
     player.move(dx, dy, focused)
-    if attack:
-        player.attack(P_bullets)
-        pygame.draw.circle(
-            screen,
-            (255, 0, 0),
-            (int(player.x), int(player.y)),
-            player.bullet_radius
-        )
+
 
     # Drawing belongs in the client
     screen.fill((15, 15, 25))
@@ -87,10 +84,18 @@ while running:
         )
     )
 
-    if not game_over:
+
+    
+    player.update_invulnerability()
+
+    if not player.Invaluability:
         if check_boss_collision(player, boss):
-            game_over = True
-            print("You were hit by the boss!")
+            player.take_damage()
+            player.clear_bullets(B_bullets)  # Clear all bullets when the player takes damage
+            player.x = 640
+            player.y = 480
+            if player.lives <= 0:
+                game_over = True
 
     if game_over:
         font = pygame.font.Font(None, 48)
@@ -98,6 +103,14 @@ while running:
         screen.blit(text, (500, 350))
         player.x = 640
         player.y = 480
+
+    for bullet in P_bullets:
+        pygame.draw.circle(
+            screen,
+            (100, 200, 255),
+            (int(bullet.x), int(bullet.y)),
+            bullet.radius
+        )
 
     pygame.display.flip()
     clock.tick(60)

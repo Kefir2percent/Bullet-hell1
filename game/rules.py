@@ -16,6 +16,30 @@ class Player:
         self.attack_cooldown = 0.05  # seconds
         self.last_attack_time = 0
         self.damage = 10
+        self.lives = 3
+        self.Invaluability = False
+        self.Invaluability_duration = 1   # seconds
+        self.Invaluability_start_time = 0
+
+    def update_invulnerability(self):
+        if self.Invaluability:
+            current_time = time.time()
+
+            if current_time - self.Invaluability_start_time >= self.Invaluability_duration:
+                self.Invaluability = False
+
+
+    def take_damage(self):
+        if not self.Invaluability:
+            self.lives -= 1
+            self.Invaluability = True
+            self.Invaluability_start_time = time.time()
+            print(f"Player took damage! Lives remaining: {self.lives}")
+
+            print(f"Lives remaining: {self.lives}")
+
+            if self.lives <= 0:
+                print("Game Over!")
 
     def move(self, dx, dy, focused):
         current_speed = (
@@ -46,10 +70,10 @@ class Player:
     def attack(self, bullets):
         current_time = time.time()
 
-        if current_time - self.last_attack >= self.attack_cooldown:
+        if current_time - self.last_attack_time >= self.attack_cooldown:
             new_bullet = Bullet(self.x, self.y, 0, -1)
             bullets.append(new_bullet)
-            self.last_attack = current_time
+            self.last_attack_time = current_time
 
         def update(self, bullets):
             # Update bullets
@@ -87,6 +111,9 @@ class Bullet:
     def get_hitbox(self):
         return (self.x, self.y, self.radius)
 
+    def clear_bullets(self, bullets):
+        bullets.clear()
+
 
 def check_collision(player, bullet):
     distance_squared = (
@@ -110,8 +137,8 @@ class Boss:
     def __init__(self, x, y):
         self.x = x
         self.y = y
-        self.radius = 30
-        self.hitbox_radius = 20
+        self.radius = 60
+        self.hitbox_radius = 60
         self.healthPoints = 100000
 
     def get_hitbox(self):

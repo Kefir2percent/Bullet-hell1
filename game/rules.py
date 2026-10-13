@@ -1,4 +1,5 @@
 import math
+import time
 
 SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 800
@@ -12,6 +13,9 @@ class Player:
         self.focus_speed = 2.5
         self.radius = 12
         self.hitbox_radius = 3
+        self.attack_cooldown = 0.2  # seconds
+        self.last_attack_time = 0
+        self.damage = 10
 
     def move(self, dx, dy, focused):
         current_speed = (
@@ -39,12 +43,26 @@ class Player:
     def get_hitbox(self):
         return (self.x, self.y, self.hitbox_radius)
 
-    def attack(self, bullets):
-        # Example attack: shoot a bullet straight up
-        bullet_dx = 0
-        bullet_dy = -1
-        new_bullet = Bullet(self.x, self.y, bullet_dx, bullet_dy)
+def attack(self, bullets):
+    current_time = time.time()
+
+    if current_time - self.last_attack >= self.attack_cooldown:
+        new_bullet = Bullet(self.x, self.y, 0, -1)
         bullets.append(new_bullet)
+        self.last_attack = current_time
+
+    def update(self, bullets):
+        # Update bullets
+        for bullet in bullets:
+            bullet.update()
+
+        # Remove off-screen bullets
+        bullets[:] = [
+            bullet for bullet in bullets
+            if not bullet.is_off_screen()
+        ]
+    def bullet_hitbox(self):
+        return (self.x, self.y, self.radius)
 
 class Bullet:
     def __init__(self, x, y, dx, dy):
@@ -84,6 +102,7 @@ class Boss:
         self.y = y
         self.radius = 30
         self.hitbox_radius = 20
+        self.healthPoints = 100000
 
     def get_hitbox(self):
         return (self.x, self.y, self.hitbox_radius)

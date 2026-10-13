@@ -8,15 +8,17 @@ pygame.init()
 SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 800
 
-G_FIELD_X = 960
-G_FIELD_Y = 800
-
 screen = pygame.display.set_mode(
     (SCREEN_WIDTH, SCREEN_HEIGHT)
 )
 clock = pygame.time.Clock()
 
 player = Player(640, 480)
+player_model = pygame.image.load("assets/Main_character_K (2).png").convert_alpha()
+player_model = pygame.transform.scale(
+    player_model,
+    (48, 48)
+)
 boss = Boss(640, 100)
 bullets = []
 running = True
@@ -48,27 +50,20 @@ while running:
             screen,
             (255, 0, 0),
             (int(player.x), int(player.y)),
-            player.bullet_hitbox()[2]
+            player.bullet_radius
         )
-        player.update(bullets)
 
     # Drawing belongs in the client
-    gamefield = pygame.image.load("assets/derevenskij-ogorod.jpg").convert()
-    gamefield = pygame.transform.scale(
-    gamefield,
-    (SCREEN_WIDTH, SCREEN_HEIGHT)
-)
-    screen.blit(gamefield, (G_FIELD_X, G_FIELD_Y))
     screen.fill((15, 15, 25))
-    pygame.draw.circle(
-        screen,
-        (0, 255, 128),
-        (int(player.x), int(player.y)),
-        player.radius
+    screen.blit(
+    player_model,
+    (
+        int(player.x - player_model.get_width() / 2),
+        int(player.y - player_model.get_height() / 2)
     )
+)
 
-    pygame.draw.circle(
-        screen,
+    pygame.draw.circle(screen,
         (255, 0, 0),
         (int(boss.x), int(boss.y)),
         boss.hitbox_radius

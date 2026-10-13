@@ -20,6 +20,12 @@ player_model = pygame.transform.scale(
     (48, 48)
 )
 boss = Boss(640, 100)
+boss_model = pygame.image.load("assets/evil_boss1.png").convert_alpha()
+boss_model = pygame.transform.scale(
+    boss_model,
+    (64, 64)
+)
+
 bullets = []
 running = True
 
@@ -30,11 +36,11 @@ while running:
 
     keys = pygame.key.get_pressed()
 
-    dx = int(keys[pygame.K_RIGHT] or keys[pygame.K_d]) \
-       - int(keys[pygame.K_LEFT] or keys[pygame.K_a])
+    dx = int(keys[pygame.K_RIGHT]) \
+       - int(keys[pygame.K_LEFT])
 
-    dy = int(keys[pygame.K_DOWN] or keys[pygame.K_s]) \
-       - int(keys[pygame.K_UP] or keys[pygame.K_w])
+    dy = int(keys[pygame.K_DOWN]) \
+       - int(keys[pygame.K_UP])
 
     focused = (
         keys[pygame.K_LSHIFT]
@@ -63,10 +69,13 @@ while running:
     )
 )
 
-    pygame.draw.circle(screen,
-        (255, 0, 0),
-        (int(boss.x), int(boss.y)),
-        boss.hitbox_radius
+
+    screen.blit(
+        boss_model,
+        (
+            int(boss.x - boss_model.get_width() / 2),
+            int(boss.y - boss_model.get_height() / 2)
+        )
     )
 
     pygame.display.flip()

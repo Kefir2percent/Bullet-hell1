@@ -5,7 +5,7 @@ import random as r
 # Game settings
 # --------------------
 
-SCREEN_WIDTH = 1280
+SCREEN_WIDTH = 1080
 SCREEN_HEIGHT = 800
 
 
@@ -27,7 +27,7 @@ class Player:
         self.hitbox_radius = 3
 
         self.damage = 50
-        self.lives = 3
+        self.lives = 10
 
         self.attack_cooldown = 0.05
         self.last_attack_time = 0
@@ -87,6 +87,7 @@ class Player:
         self.Invaluability_start_time = time.time()
 
         print(f"Player took damage! Lives remaining: {self.lives}")
+        
 
     def update_invulnerability(self):
         if self.Invaluability:
@@ -105,6 +106,8 @@ class Player:
         return (self.x, self.y, self.radius)
 
 
+
+
 # --------------------
 # Bullet
 # --------------------
@@ -112,7 +115,7 @@ class Player:
 class Bullet:
     def __init__(
         self, x, y, dx, dy,
-        speed=8.0,
+        speed=10.0,
         radius=3
     ):
         self.x = x
@@ -214,3 +217,15 @@ def score_counter(player, boss):
     player.score = int((1 - boss.get_hp_ratio()) * 100000)
     return player.score
 
+
+
+def handle_player_damage(player, enemy_bullets, start_x, start_y):
+    # Apply score penalty
+    player.score_mult *= 0.75
+
+    # Return player to starting position
+    player.x = start_x
+    player.y = start_y
+
+    # Clear all enemy bullets
+    enemy_bullets.clear()

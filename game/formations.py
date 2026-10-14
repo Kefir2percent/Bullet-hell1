@@ -59,7 +59,7 @@ def create_orbit_circle(
     count=24,
     orbit_radius=40,
     angular_speed=0.005,
-    bullet_radius=8,
+    bullet_radius=9,
 ):
     for i in range(count):
         angle = 2 * math.pi * i / count

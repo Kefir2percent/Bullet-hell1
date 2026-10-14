@@ -17,6 +17,10 @@ import game.formations
 
 pygame.init()
 
+field = pygame.image.load("assets/ogorod.png")
+
+
+
 # --------------------
 # Settings
 # --------------------
@@ -24,6 +28,11 @@ pygame.init()
 SCREEN_WIDTH = 1080
 SCREEN_HEIGHT = 800
 FPS = 60
+
+field = pygame.transform.scale(
+    field,
+    (SCREEN_WIDTH, SCREEN_HEIGHT)
+)
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Bullet Hell")
@@ -37,6 +46,9 @@ large_font = pygame.font.Font(None, 64)
 # --------------------
 
 player = Player(540, 600)
+STARTING_X = player.x
+STARTING_Y = player.y
+
 boss = Boss(540, 300)
 
 player_model = pygame.image.load(
@@ -115,12 +127,18 @@ while running:
                 angular_speed=0.005 * rotation_direction
             )
 
+            if hp_ratio == 0.9:
+                create_orbit_circle(boss.x,boss.y,B_bullets,angular_speed = 0.006 * rotation_direction, bullet_radius=8.5)
+
             ring_time += 1
             last_boss_attack_time = current_time
 
             if ring_time >= 3:
                 ring_time = 0
                 rotation_direction *= -1
+
+
+            
 
         # Remove boss bullets that leave the screen
         B_bullets[:] = [
@@ -171,7 +189,7 @@ while running:
     # Drawing
     # --------------------
 
-    screen.fill((15, 15, 25))
+    screen.blit(field, (0, 0))
 
     # Draw player and boss
     screen.blit(
@@ -249,7 +267,7 @@ while running:
         game_over_text = large_font.render(
             "GAME OVER",
             True,
-            (255, 60, 60)
+            (0,0,0)
         )
 
         screen.blit(

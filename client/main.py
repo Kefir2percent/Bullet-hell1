@@ -13,6 +13,7 @@ from game.rules import (
 )
 
 from game.formations import create_orbit_circle
+from game.formations import fire_at_player
 import game.formations
 
 pygame.init()
@@ -70,9 +71,15 @@ create_orbit_circle(boss.x, boss.y, B_bullets)
 running = True
 game_over = False
 
-last_boss_attack_time = 0
 ring_time = 0
 rotation_direction = 1
+
+last_boss_attack_time = 0
+burst_pause = False
+pause_start_time = 0
+
+ATTACK_INTERVAL = 0.6
+PAUSE_DURATION = 2.0
 
 # --------------------
 # Main game loop
@@ -118,25 +125,32 @@ while running:
     hp_ratio = boss.healthPoints / boss.max_health
 
     if hp_ratio > 0.75:
-        if current_time - last_boss_attack_time >= 0.6:
-
-            create_orbit_circle(
-                boss.x,
-                boss.y,
-                B_bullets,
-                angular_speed=0.005 * rotation_direction
-            )
-
-            if hp_ratio == 0.9:
-                create_orbit_circle(boss.x,boss.y,B_bullets,angular_speed = 0.006 * rotation_direction, bullet_radius=8.5)
-
-            ring_time += 1
-            last_boss_attack_time = current_time
-
-            if ring_time >= 3:
-                ring_time = 0
+        if burst_pause:
+            # Wait until the pause has ended
+            if current_time - pause_start_time >= PAUSE_DURATION:
+                burst_pause = False
                 rotation_direction *= -1
+                ring_time = 0
 
+        else:
+            # Fire one ring at a time
+            if current_time - last_boss_attack_time >= ATTACK_INTERVAL:
+                create_orbit_circle(
+                    boss.x,
+                    boss.y,
+                    B_bullets,
+                    angular_speed=0.005 * rotation_direction
+                )
+
+                fire_at_player(boss, player, B_bullets)
+
+                ring_time += 1
+                last_boss_attack_time = current_time
+
+                # After 3 rings, begin the pause
+                if ring_time >= 3:
+                    burst_pause = True
+                    pause_start_time = current_time
 
             
 

@@ -56,10 +56,10 @@ def create_orbit_circle(
     center_x,
     center_y,
     bullets,
-    count=24,
-    orbit_radius=40,
-    angular_speed=0.005,
-    bullet_radius=9,
+    count=16,
+    orbit_radius=15,
+    angular_speed=0.008,
+    bullet_radius=15,
 ):
     for i in range(count):
         angle = 2 * math.pi * i / count
@@ -74,3 +74,24 @@ def create_orbit_circle(
         )
 
         bullets.append(bullet)
+
+def fire_at_player(boss, player, bullets, speed=2.0):
+    dx = player.x - boss.x
+    dy = player.y - boss.y
+
+    distance = math.hypot(dx, dy)
+
+    if distance == 0:
+        return
+
+    dx /= distance
+    dy /= distance
+
+    bullets.append(
+    Bullet(
+        boss.x, boss.y,
+        dx, dy,
+        speed=speed,
+        radius=8
+    )
+    )

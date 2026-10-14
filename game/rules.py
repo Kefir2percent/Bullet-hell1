@@ -115,7 +115,7 @@ class Player:
 class Bullet:
     def __init__(
         self, x, y, dx, dy,
-        speed=10.0,
+        speed=20.0,
         radius=3
     ):
         self.x = x

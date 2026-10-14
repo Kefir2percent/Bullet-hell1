@@ -1,3 +1,5 @@
+import time
+
 import pygame
 
 from game.rules import (
@@ -10,13 +12,16 @@ from game.rules import (
     score_counter
 )
 
+from game.formations import create_orbit_circle
+import game.formations
+
 pygame.init()
 
 # --------------------
 # Settings
 # --------------------
 
-SCREEN_WIDTH = 1280
+SCREEN_WIDTH = 1080
 SCREEN_HEIGHT = 800
 FPS = 60
 
@@ -31,8 +36,8 @@ large_font = pygame.font.Font(None, 64)
 # Game objects
 # --------------------
 
-player = Player(640, 480)
-boss = Boss(640, 100)
+player = Player(540, 600)
+boss = Boss(540, 300)
 
 player_model = pygame.image.load(
     "assets/Main_character_K (2).png"
@@ -48,10 +53,14 @@ boss_model = pygame.transform.scale(boss_model, (100, 100))
 P_bullets = []
 B_bullets = []
 
+create_orbit_circle(boss.x, boss.y, B_bullets)
+
 running = True
 game_over = False
 
 last_boss_attack_time = 0
+ring_time = 0
+rotation_direction = 1
 
 # --------------------
 # Main game loop
@@ -91,6 +100,27 @@ while running:
         # Update boss bullets ONCE per frame
         for bullet in B_bullets:
             bullet.update()
+
+
+    current_time = time.time()
+    hp_ratio = boss.healthPoints / boss.max_health
+
+    if hp_ratio > 0.75:
+        if current_time - last_boss_attack_time >= 0.6:
+
+            create_orbit_circle(
+                boss.x,
+                boss.y,
+                B_bullets,
+                angular_speed=0.005 * rotation_direction
+            )
+
+            ring_time += 1
+            last_boss_attack_time = current_time
+
+            if ring_time >= 3:
+                ring_time = 0
+                rotation_direction *= -1
 
         # Remove boss bullets that leave the screen
         B_bullets[:] = [
@@ -152,6 +182,7 @@ while running:
         )
     )
 
+
     screen.blit(
         boss_model,
         (
@@ -193,13 +224,25 @@ while running:
         (255, 255, 255)
     )
 
-    Score_counter = font.render(
-        f"Score: {score_counter(player, boss)}",
+    score = int(score_counter(player, boss) * player.score_mult)
+    score_text = font.render(
+        f"Score: {score}",
         True,
         (255, 255, 255)
     )
     screen.blit(boss_hp_text, (20, 60))
-    screen.blit(Score_counter, (20, 100))
+    screen.blit(score_text, (20, 100))
+
+    if focused:
+        pygame.draw.circle(
+            screen,
+            (255, 255, 255),
+            (int(player.x), int(player.y)),
+            player.hitbox_radius,
+            0
+        )
+
+
 
     # Game over message
     if game_over:

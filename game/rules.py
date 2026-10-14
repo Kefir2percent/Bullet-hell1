@@ -1,4 +1,5 @@
 import time
+import random as r
 
 # --------------------
 # Game settings
@@ -16,6 +17,8 @@ class Player:
     def __init__(self, x, y):
         self.x = x
         self.y = y
+
+        self.score_mult = 1.0
 
         self.normal_speed = 5.0
         self.focus_speed = 2.5
@@ -78,6 +81,8 @@ class Player:
             return
 
         self.lives -= 1
+        self.score_mult *= 0.75
+
         self.Invaluability = True
         self.Invaluability_start_time = time.time()
 
@@ -107,7 +112,7 @@ class Player:
 class Bullet:
     def __init__(
         self, x, y, dx, dy,
-        speed=10.0,
+        speed=8.0,
         radius=3
     ):
         self.x = x
@@ -146,7 +151,7 @@ class Boss:
         self.radius = 60
         self.hitbox_radius = 60
 
-        self.max_health = 100000
+        self.max_health = 200000
         self.healthPoints = self.max_health
 
         self.damage = 1
@@ -206,6 +211,6 @@ def check_boss_collision(player, boss):
 
 def score_counter(player, boss):
     """Calculate the score based on the boss's health."""
-    count = int((1 - boss.get_hp_ratio()) * 100000)
-    return count
+    player.score = int((1 - boss.get_hp_ratio()) * 100000)
+    return player.score
 

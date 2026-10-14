@@ -102,12 +102,12 @@ def fire_at_player(boss, player, bullets, speed=2.0):
 
 
 RAINBOW_COLORS = [
-    (255, 60, 60),    # Red
-    (255, 150, 40),   # Orange
-    (255, 230, 60),   # Yellow
-    (60, 220, 100),   # Green
-    (60, 170, 255),   # Blue
-    (170, 90, 255),   # Violet
+    (255, 100, 120),  # Pink-red
+    (255, 220, 150),  # Yellow
+    (100, 255, 140),  # Green
+    (100, 220, 255),  # Cyan
+    (180, 150, 255),  # Purple
+    (255, 245, 220),  # White
 ]
 
 
@@ -115,20 +115,23 @@ class WinderBullet:
     def __init__(
         self,
         angle,
-        direction=1,
-        radial_speed=1.5,
-        angular_speed=0.015,
-        radius=6,
-        color=(255, 255, 255)
+        distance,
+        angular_speed=0.012,
+        radial_speed=2.0,
+        color=(255, 255, 255),
+        radius = 10
     ):
+        # The center of the formation.
         self.center_x = SCREEN_WIDTH / 2
         self.center_y = SCREEN_HEIGHT / 2
 
-        self.distance = 600
         self.angle = angle
+        self.distance = distance
 
+        self.radius = radius
+
+        self.angular_speed = angular_speed
         self.radial_speed = radial_speed
-        self.angular_speed = angular_speed * direction
 
         self.radius = radius
         self.color = color
@@ -141,44 +144,126 @@ class WinderBullet:
             self.center_x
             + math.cos(self.angle) * self.distance
         )
+
         self.y = (
             self.center_y
             + math.sin(self.angle) * self.distance
         )
 
     def update(self):
+        # Rotate the trajectory while moving through the center.
         self.angle += self.angular_speed
+
+        # Distance is signed: bullets can pass through zero
+        # and emerge on the opposite side of the center.
         self.distance -= self.radial_speed
+
         self.update_position()
 
     def is_off_screen(self):
-        return self.distance <= 0
-
+        return (
+            self.x < -self.radius
+            or self.x > SCREEN_WIDTH + self.radius
+            or self.y < -self.radius
+            or self.y > SCREEN_HEIGHT + self.radius
+        )
 
 
 def create_winder_wave(
     bullets,
-    count=12,
+    count=24,
     direction=1,
     angle_offset=0,
-    radial_speed=1.5,
-    angular_speed=0.015
+    radial_speed=2.0,
+    angular_speed=0.012,
+    radius = 10
 ):
+    # Spawn bullets around a large ring.
+    # Each wave is slightly rotated from the previous wave.
+    spawn_distance = max(SCREEN_WIDTH, SCREEN_HEIGHT) * 0.45
+
     for i in range(count):
+
         angle = (
             2 * math.pi * i / count
             + angle_offset
         )
 
-        color = RAINBOW_COLORS[i % len(RAINBOW_COLORS)]
+        color = RAINBOW_COLORS[
+            i % len(RAINBOW_COLORS)
+        ]
 
         bullet = WinderBullet(
             angle=angle,
-            direction=direction,
+            distance=spawn_distance,
+            angular_speed=angular_speed * direction,
             radial_speed=radial_speed,
-            angular_speed=angular_speed,
-            color=color
+            radius=10,
+            color=color,
         )
 
         bullets.append(bullet)
 
+
+class WallBullet:
+    def __init__(self, x, y, dx, dy, speed=3.0, radius=7):
+        self.x = x
+        self.y = y
+        self.dx = dx
+        self.dy = dy
+        self.speed = speed
+        self.radius = radius
+        self.color = (100, 220, 255)
+        self.shape = "circle"
+
+    def update(self):
+        self.x += self.dx * self.speed
+        self.y += self.dy * self.speed
+
+    def is_off_screen(self):
+        return (
+            self.x < -self.radius
+            or self.x > SCREEN_WIDTH + self.radius
+            or self.y < -self.radius
+            or self.y > SCREEN_HEIGHT + self.radius
+        )
+
+
+def create_wall_bullet(bullets, x, y, dx, dy, speed=3.0):
+    bullets.append(
+        WallBullet(x, y, dx, dy, speed=speed)
+    )
+
+
+def create_triangle_walls(
+    bullets,
+    top_x,
+    top_y,
+    left_x,
+    right_x,
+    bottom_y,
+    spacing=25,
+    speed=3.0,
+):
+    for bottom_x in (left_x, right_x):
+        distance = math.hypot(
+            bottom_x - top_x,
+            bottom_y - top_y
+        )
+        steps = max(1, int(distance / spacing))
+
+        dx = (bottom_x - top_x) / distance
+        dy = (bottom_y - top_y) / distance
+
+        for i in range(steps):
+            t = i / steps
+
+            x = top_x + (bottom_x - top_x) * t
+            y = top_y + (bottom_y - top_y) * t
+
+            create_wall_bullet(
+                bullets,
+                x, y,
+                dx, dy,
+                speed=speed
+            )

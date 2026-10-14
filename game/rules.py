@@ -19,6 +19,7 @@ class Player:
         self.y = y
 
         self.score_mult = 1.0
+        self.score = 0
 
         self.normal_speed = 5.0
         self.focus_speed = 2.5
@@ -221,7 +222,7 @@ def score_counter(player, boss):
 
 def handle_player_damage(player, enemy_bullets, start_x, start_y):
     # Apply score penalty
-    player.score_mult *= 0.75
+    player.score = int(player.score * 0.75)
 
     # Return player to starting position
     player.x = start_x

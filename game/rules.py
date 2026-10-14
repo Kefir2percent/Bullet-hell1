@@ -27,7 +27,7 @@ class Player:
         self.hitbox_radius = 3
 
         self.damage = 50
-        self.lives = 10
+        self.lives = 999
 
         self.attack_cooldown = 0.05
         self.last_attack_time = 0

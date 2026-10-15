@@ -1,5 +1,6 @@
 import time
 import pygame
+import string
 
 from game.rules import (
     Player,
@@ -55,6 +56,7 @@ menu_button = pygame.Rect(390, 440, 300, 70)
 username = ""
 username_box = pygame.Rect(340, 290, 400, 50)
 username_active = False
+allowed_username_chars = string.ascii_letters + string.digits + "_"
 
 field = pygame.image.load("assets/ogorod.png").convert()
 field = pygame.transform.scale(field, (SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -213,8 +215,10 @@ while running:
                 username = username[:-1]
 
             elif event.key == pygame.K_RETURN:
-                username_active = False
-            elif event.unicode.isprintable() and len(username) < 16:
+                if len(username) >= 3:
+                    username_active = False
+
+            elif event.unicode in allowed_username_chars and len(username) <= 16:
                 username += event.unicode
 
 

@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Player Profile | Battle of Compensation{% endblock %}
+
+{% block page_content %}
+
+<header class="site-header">
+    <a class="brand" href="/">
+        <span class="brand-icon">🌳</span>
+        <span>
+            <strong>BATTLE OF <em>COMPENSATION</em></strong>
+            <small>YES, THIS IS AN ACTUAL GAME</small>
+        </span>
+    </a>
+
+    <nav class="header-nav">
+        <a class="nav-btn" href="/">🏆 LEADERBOARD</a>
+        <a class="nav-btn" href="/rules">📜 HOW TO PLAY</a>
+    </nav>
+</header>
+
+<main class="lb-container">
+    <section class="page-hero">
+        <span class="eyebrow">PLAYER PROFILE</span>
+        <h1>{{ player.username }}</h1>
+        <p>Statistics from the garden battlefield.</p>
+    </section>
+
+    <section class="lb-board">
+        <div class="lb-board-heading">
+            <span class="board-symbol">♛</span>
+            <h2>PLAYER STATISTICS</h2>
+        </div>
+
+        <div class="player-statistics">
+            <p><strong>Username:</strong> {{ player.username }}</p>
+            <p><strong>High score:</strong> {{ player.score }}</p>
+            <p><strong>Boss defeated:</strong> {{ "Yes" if player.defeated_boss else "No" }}</p>
+        </div>
+
+        <div class="lb-board-footer">
+            <span>⚔ BATTLE OF COMPENSATION</span>
+            <a href="/">BACK TO LEADERBOARD</a>
+        </div>
+    </section>
+</main>
+
+{% endblock %}

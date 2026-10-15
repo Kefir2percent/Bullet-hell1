@@ -43,7 +43,6 @@
               <th>Rank</th>
               <th>Player</th>
               <th>Score</th>
-              <th class="lb-center">Boss Defeated</th>
             </tr>
           </thead>
           <tbody id="leaderboard-body"></tbody>
@@ -64,12 +63,12 @@
   <script>
     // Example data. Replace with your actual game results.
     const players = [
-      { username: "ForestKing", score: 245800, defeatedBoss: true },
-      { username: "ShadowHunter", score: 198450, defeatedBoss: true },
-      { username: "DarkWarden", score: 176200, defeatedBoss: false },
-      { username: "RangerJoe", score: 154900, defeatedBoss: true },
-      { username: "IronFist", score: 132650, defeatedBoss: false },
-      { username: "MossGoblin", score: 98700, defeatedBoss: false }
+      { username: "ForestKing", score: 245800 },
+      { username: "ShadowHunter", score: 198450 },
+      { username: "DarkWarden", score: 176200 },
+      { username: "RangerJoe", score: 154900 },
+      { username: "IronFist", score: 132650 },
+      { username: "MossGoblin", score: 98700 }
     ];
 
     const tbody = document.getElementById("leaderboard-body");
@@ -100,7 +99,13 @@
         const playerText = document.createElement("div");
         const username = document.createElement("span");
         username.className = "lb-username";
-        username.textContent = player.username;
+        
+        const playerLink = document.createElement("a");
+        playerLink.href = `/players/${encodeURIComponent(player.username)}`;
+        playerLink.textContent = player.username;
+        playerLink.className = "lb-username";
+
+        playerText.append(playerLink, label);
 
         const label = document.createElement("span");
         label.className = "lb-player-label";
@@ -117,14 +122,8 @@
         const bossCell = document.createElement("td");
         bossCell.className = "lb-center";
 
-        const status = document.createElement("span");
-        status.className = player.defeatedBoss
-          ? "lb-status lb-yes"
-          : "lb-status lb-no";
-        status.textContent = player.defeatedBoss ? "YES" : "NO";
 
-        bossCell.append(status);
-        row.append(rankCell, playerCell, scoreCell, bossCell);
+        row.append(rankCell, playerCell, scoreCell);
         tbody.append(row);
       });
   </script>

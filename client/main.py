@@ -8,13 +8,15 @@ from game.rules import (
     check_boss_collision,
     check_bullet_boss_collision,
     score_counter,
-    handle_player_damage
+    handle_player_damage,
+    use_bomb
 )
 from game.formations import (
     create_orbit_circle,
     fire_at_player,
     create_winder_wave,
-    create_triangle_walls
+    create_triangle_walls,
+    create_geometry_pattern,
 )
 
 # --------------------
@@ -23,16 +25,32 @@ from game.formations import (
 
 pygame.init()
 
+pygame.mixer.music.load("assets/Sounds/govnovoz.mp3")
+pygame.mixer.music.set_volume(0.5)  # Volume: 0.0–1.0
+pygame.mixer.music.play(-1)         # -1 means loop forever
+
 SCREEN_WIDTH = 1080
 SCREEN_HEIGHT = 800
 FPS = 60
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-pygame.display.set_caption("Bullet Hell")
+pygame.display.set_caption("Battle of Compensation")
 clock = pygame.time.Clock()
 
 font = pygame.font.Font(None, 36)
 large_font = pygame.font.Font(None, 64)
+
+
+button_font = pygame.font.Font(None, 44)
+
+play_button = pygame.Rect(390, 350, 300, 70)
+pause_button = pygame.Rect(950, 15, 110, 45)
+resume_button = pygame.Rect(390, 350, 300, 70)
+menu_button = pygame.Rect(390, 440, 300, 70)
+
+username = ""
+username_box = pygame.Rect(340, 290, 400, 50)
+username_active = False
 
 field = pygame.image.load("assets/ogorod.png").convert()
 field = pygame.transform.scale(field, (SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -48,6 +66,8 @@ boss_model = pygame.image.load(
 boss_model = pygame.transform.scale(boss_model, (100, 100))
 
 player = Player(540, 600)
+
+bomb_penalty = 0
 boss = Boss(540, 300)
 
 STARTING_X = player.x
@@ -89,6 +109,9 @@ phase3_start_time = None
 last_triangle_wall_time = 0
 triangle_wall_count = 0
 
+phase4_start_time = None
+last_geometry_time = 0
+
 # --------------------
 # Game loop
 # --------------------
@@ -96,6 +119,11 @@ triangle_wall_count = 0
 running = True
 game_over = False
 victory = False
+
+game_state = "menu"  # menu, playing, paused
+
+bomb_active = False
+bomb_start_time = 0
 
 while running:
     clock.tick(FPS)
@@ -106,17 +134,99 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                if game_state == "playing" and not game_over:
+                    game_state = "paused"
+                    pause_started_at = time.time()
+
+                elif game_state == "paused":
+                    game_state = "playing"
+
+                    # Preserve attack timing after the pause.
+                    paused_duration = time.time() - pause_started_at
+
+                    last_boss_attack_time += paused_duration
+                    last_winder_wave_time += paused_duration
+                    pause_start_time += paused_duration
+                    last_triangle_wall_time += paused_duration
+                    last_aimed_shot_time += paused_duration
+                    last_geometry_time += paused_duration
+
+                    if phase3_start_time is not None:
+                        phase3_start_time += paused_duration
+
+                    if phase4_start_time is not None:
+                        phase4_start_time += paused_duration
+
+
+            elif event.key == pygame.K_x:
+                if game_state == "playing" and not game_over:
+                    if use_bomb(player, B_bullets):
+                        bomb_penalty += 1000
+
+                                
+
+            
+
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            if event.button == 1:
+                mouse_pos = event.pos
+
+                if game_state == "menu":
+                    if play_button.collidepoint(mouse_pos):
+                        game_state = "playing"
+
+                elif game_state == "playing" and not game_over:
+                    if pause_button.collidepoint(mouse_pos):
+                        game_state = "paused"
+                        pause_started_at = time.time()
+
+                elif game_state == "paused":
+                    if resume_button.collidepoint(mouse_pos):
+                        game_state = "playing"
+
+                        paused_duration = time.time() - pause_started_at
+
+                        last_boss_attack_time += paused_duration
+                        last_winder_wave_time += paused_duration
+                        pause_start_time += paused_duration
+                        last_triangle_wall_time += paused_duration
+                        last_aimed_shot_time += paused_duration
+                        last_geometry_time += paused_duration
+
+                        if phase3_start_time is not None:
+                            phase3_start_time += paused_duration
+
+                        if phase4_start_time is not None:
+                            phase4_start_time += paused_duration
+
+        if event.type == pygame.MOUSEBUTTONDOWN and game_state == "menu":
+            username_active = username_box.collidepoint(event.pos)
+
+        if event.type == pygame.KEYDOWN and game_state == "menu" and username_active:
+            if event.key == pygame.K_BACKSPACE:
+                username = username[:-1]
+
+            elif event.key == pygame.K_RETURN:
+                username_active = False
+            elif event.unicode.isprintable() and len(username) < 16:
+                username += event.unicode
+
+
+
     keys = pygame.key.get_pressed()
 
     dx = int(keys[pygame.K_RIGHT]) - int(keys[pygame.K_LEFT])
     dy = int(keys[pygame.K_DOWN]) - int(keys[pygame.K_UP])
     focused = keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]
 
+
     # --------------------
     # Game updates
     # --------------------
 
-    if not game_over:
+    if game_state == "playing" and not game_over:
 
         # Player movement and shooting
         player.move(dx, dy, focused)
@@ -158,7 +268,7 @@ while running:
                     angular_speed=0.005 * rotation_direction,
                 )
 
-                fire_at_player(boss, player, B_bullets)
+                fire_at_player(boss, player, B_bullets, speed=2.0)
 
                 ring_count += 1
                 last_boss_attack_time = current_time
@@ -186,7 +296,7 @@ while running:
                 winder_wave_count += 1
                 last_winder_wave_time = current_time
 
-        else:
+        elif hp_ratio > 0.25:
             # Phase 3: streaming walls
             if phase3_start_time is None:
                 phase3_start_time = current_time
@@ -229,10 +339,34 @@ while running:
                 triangle_wall_count += 1
                 last_triangle_wall_time = current_time
 
-            # Occasional aimed shots keep the player moving.
             if current_time - last_aimed_shot_time >= AIMED_SHOT_INTERVAL:
-                fire_at_player(boss, player, B_bullets, speed=10)
+                fire_at_player(boss, player, B_bullets, speed=8)
                 last_aimed_shot_time = current_time
+
+        else:
+            if phase4_start_time is None:
+                phase4_start_time = current_time
+
+            elapsed = current_time - phase4_start_time
+
+            GEOMETRY_INTERVAL = 0.12
+
+            if current_time - last_geometry_time >= GEOMETRY_INTERVAL:
+                create_geometry_pattern(
+                    B_bullets,
+                    boss.x,
+                    boss.y,
+                    elapsed,
+                    vertex_count=6,
+                    base_radius=200,
+                    speed=5.0,
+                )
+
+                last_geometry_time = current_time
+
+
+            # Occasional aimed shots keep the player moving.
+
 
         # --------------------
         # Player bullet collisions
@@ -241,6 +375,7 @@ while running:
         for bullet in P_bullets[:]:
             if check_bullet_boss_collision(bullet, boss):
                 boss.take_damage(player.damage)
+                player.score += int(player.damage / boss.max_health * 100000)
                 P_bullets.remove(bullet)
 
         # --------------------
@@ -289,107 +424,253 @@ while running:
             victory = False
             game_over = True
 
+
     # --------------------
     # Drawing
     # --------------------
 
+    # Always draw the background first.
     screen.blit(field, (0, 0))
 
-    screen.blit(
-        player_model,
-        (
-            int(player.x - player_model.get_width() / 2),
-            int(player.y - player_model.get_height() / 2),
-        ),
-    )
+    # --------------------
+    # Gameplay rendering
+    # --------------------
+    # Do not draw gameplay objects on the main menu.
+    if game_state != "menu":
 
-    screen.blit(
-        boss_model,
-        (
-            int(boss.x - boss_model.get_width() / 2),
-            int(boss.y - boss_model.get_height() / 2),
-        ),
-    )
-
-    # Player bullets
-    for bullet in P_bullets:
-        pygame.draw.circle(
-            screen,
-            (100, 200, 255),
-            (int(bullet.x), int(bullet.y)),
-            bullet.radius,
-        )
-
-    # Enemy bullets: support both colored diamonds and circles
-    for bullet in B_bullets:
-        x = int(bullet.x)
-        y = int(bullet.y)
-        radius = bullet.radius
-
-        color = getattr(bullet, "color", (255, 255, 255))
-        shape = getattr(bullet, "shape", "circle")
-
-        if shape == "diamond":
-            pygame.draw.polygon(
-                screen,
-                color,
-                [
-                    (x, y - radius),
-                    (x + radius, y),
-                    (x, y + radius),
-                    (x - radius, y),
-                ],
-            )
-        else:
-            pygame.draw.circle(
-                screen,
-                color,
-                (x, y),
-                radius,
-            )
-
-    # UI
-    lives_text = font.render(
-        f"Lives: {player.lives}", True, (255, 255, 255)
-    )
-    hp_text = font.render(
-        f"Boss HP: {boss.healthPoints}", True, (255, 255, 255)
-    )
-
-    score = int(score_counter(player, boss) * player.score_mult)
-    score_text = font.render(
-        f"Score: {score}", True, (255, 255, 255)
-    )
-
-    screen.blit(lives_text, (20, 20))
-    screen.blit(hp_text, (20, 60))
-    screen.blit(score_text, (20, 100))
-
-    # Show the small hitbox while focused
-    if focused and not game_over:
-        pygame.draw.circle(
-            screen,
-            (255, 255, 255),
-            (int(player.x), int(player.y)),
-            player.hitbox_radius,
-        )
-
-    # End screen
-    if game_over:
-        message = "YOU WIN!" if victory else "GAME OVER"
-
-        game_over_text = large_font.render(
-            message, True, (255, 255, 255)
-        )
-
+        # Player sprite
         screen.blit(
-            game_over_text,
+            player_model,
             (
-                SCREEN_WIDTH // 2 - game_over_text.get_width() // 2,
-                SCREEN_HEIGHT // 2 - game_over_text.get_height() // 2,
+                int(player.x - player_model.get_width() / 2),
+                int(player.y - player_model.get_height() / 2),
             ),
         )
 
+        # Boss sprite
+        screen.blit(
+            boss_model,
+            (
+                int(boss.x - boss_model.get_width() / 2),
+                int(boss.y - boss_model.get_height() / 2),
+            ),
+        )
+
+        # Player bullets
+        for bullet in P_bullets:
+            pygame.draw.circle(
+                screen,
+                (100, 200, 255),
+                (int(bullet.x), int(bullet.y)),
+                bullet.radius,
+            )
+
+        # Enemy bullets: support both colored diamonds and circles
+        for bullet in B_bullets:
+            x = int(bullet.x)
+            y = int(bullet.y)
+            radius = bullet.radius
+
+            color = getattr(bullet, "color", (255, 255, 255))
+            shape = getattr(bullet, "shape", "circle")
+
+            if shape == "diamond":
+                pygame.draw.polygon(
+                    screen,
+                    color,
+                    [
+                        (x, y - radius),
+                        (x + radius, y),
+                        (x, y + radius),
+                        (x - radius, y),
+                    ],
+                )
+            else:
+                pygame.draw.circle(
+                    screen,
+                    color,
+                    (x, y),
+                    radius,
+                )
+
+        # HUD
+        lives_text = font.render(
+            f"Lives: {player.lives}",
+            True,
+            (255, 255, 255),
+        )
+
+        hp_text = font.render(
+            f"Boss HP: {boss.healthPoints}",
+            True,
+            (255, 255, 255),
+        )
+
+        score_text = font.render(
+            f"Score: {player.score}",
+            True,
+            (255, 255, 255),
+        )
+
+        screen.blit(lives_text, (20, 20))
+        screen.blit(hp_text, (20, 60))
+        screen.blit(score_text, (20, 100))
+
+        # Show the small hitbox while focused
+        if focused and not game_over:
+            pygame.draw.circle(
+                screen,
+                (255, 255, 255),
+                (int(player.x), int(player.y)),
+                player.hitbox_radius,
+            )
+
+        # End screen
+        if game_over:
+            message = "YOU WIN!" if victory else "GAME OVER"
+
+            game_over_text = large_font.render(
+                message,
+                True,
+                (255, 255, 255),
+            )
+
+            screen.blit(
+                game_over_text,
+                (
+                    SCREEN_WIDTH // 2 - game_over_text.get_width() // 2,
+                    SCREEN_HEIGHT // 2 - game_over_text.get_height() // 2,
+                ),
+            )
+
+    # --------------------
+    # Main menu — drawn last
+    # --------------------
+    if game_state == "menu":
+        # The background was already drawn, and gameplay objects
+        # were skipped, so the menu stays clean.
+        title = large_font.render(
+            "BATTLE OF COMPENSATION",
+            True,
+            (255, 255, 255),
+        )
+
+        screen.blit(
+            title,
+            (
+                SCREEN_WIDTH // 2 - title.get_width() // 2,
+                200,
+            ),
+        )
+
+        pygame.draw.rect(screen, (40, 120, 70), play_button)
+        pygame.draw.rect(screen, (255, 255, 255), play_button, 3)
+
+        play_text = button_font.render(
+            "PLAY",
+            True,
+            (255, 255, 255),
+        )
+
+        screen.blit(
+            play_text,
+            (
+                play_button.centerx - play_text.get_width() // 2,
+                play_button.centery - play_text.get_height() // 2,
+            ),
+        )
+        username_label = font.render(
+            "Enter username:",
+            True,
+            (255, 255, 255)
+        )
+        screen.blit(
+            username_label,
+            (username_box.x, username_box.y - 35)
+        )
+
+        # Username input box
+        pygame.draw.rect(screen, (30, 30, 30), username_box)
+
+        box_color = (255, 220, 100) if username_active else (220, 220, 220)
+        pygame.draw.rect(screen, box_color, username_box, 3)
+
+        # Text inside the box
+        display_name = username if username else "Type your name..."
+        text_color = (255, 255, 255) if username else (160, 160, 160)
+
+        name_text = font.render(display_name, True, text_color)
+        screen.blit(
+            name_text,
+            (username_box.x + 10, username_box.centery - name_text.get_height() // 2)
+        )
+
+    # --------------------
+    # Pause screen — drawn over gameplay
+    # --------------------
+    elif game_state == "paused":
+        overlay = pygame.Surface(
+            (SCREEN_WIDTH, SCREEN_HEIGHT),
+            pygame.SRCALPHA,
+        )
+
+        overlay.fill((0, 0, 0, 170))
+        screen.blit(overlay, (0, 0))
+
+        paused_text = large_font.render(
+            "PAUSED",
+            True,
+            (255, 255, 255),
+        )
+
+        screen.blit(
+            paused_text,
+            (
+                SCREEN_WIDTH // 2 - paused_text.get_width() // 2,
+                250,
+            ),
+        )
+
+        pygame.draw.rect(screen, (40, 120, 70), resume_button)
+        pygame.draw.rect(screen, (255, 255, 255), resume_button, 3)
+
+        resume_text = button_font.render(
+            "RESUME",
+            True,
+            (255, 255, 255),
+        )
+
+        screen.blit(
+            resume_text,
+            (
+                resume_button.centerx - resume_text.get_width() // 2,
+                resume_button.centery - resume_text.get_height() // 2,
+            ),
+        )
+
+    # --------------------
+    # Pause button — gameplay only
+    # --------------------
+    elif game_state == "playing" and not game_over:
+        pygame.draw.rect(screen, (150, 40, 40), pause_button)
+        pygame.draw.rect(screen, (255, 255, 255), pause_button, 2)
+
+        pause_text = font.render(
+            "PAUSE",
+            True,
+            (255, 255, 255),
+        )
+
+        screen.blit(
+            pause_text,
+            (
+                pause_button.centerx - pause_text.get_width() // 2,
+                pause_button.centery - pause_text.get_height() // 2,
+            ),
+        )
+
+    # Present the completed frame once.
     pygame.display.flip()
+
 
 pygame.quit()

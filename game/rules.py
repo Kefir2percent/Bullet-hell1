@@ -28,7 +28,7 @@ class Player:
         self.hitbox_radius = 3
 
         self.damage = 50
-        self.lives = 999
+        self.lives = 25
 
         self.attack_cooldown = 0.05
         self.last_attack_time = 0
@@ -82,7 +82,6 @@ class Player:
             return
 
         self.lives -= 1
-        self.score_mult *= 0.75
 
         self.Invaluability = True
         self.Invaluability_start_time = time.time()
@@ -213,9 +212,13 @@ def check_boss_collision(player, boss):
     return distance_squared < radius_sum ** 2
 
 
-def score_counter(player, boss):
-    """Calculate the score based on the boss's health."""
-    player.score = int((1 - boss.get_hp_ratio()) * 100000)
+def score_counter(player, boss, bomb_penalty=0):
+    """Calculate score from boss damage, score multiplier, and bomb costs."""
+    base_score = int(
+        (1 - boss.get_hp_ratio()) * 100000 * player.score_mult
+    )
+
+    player.score = max(0, base_score - bomb_penalty)
     return player.score
 
 
@@ -230,3 +233,12 @@ def handle_player_damage(player, enemy_bullets, start_x, start_y):
 
     # Clear all enemy bullets
     enemy_bullets.clear()
+
+
+def use_bomb(player, enemy_bullets):
+    if player.score >= 1000:
+        enemy_bullets.clear()
+        player.score -= 1000
+        return True
+
+    return False

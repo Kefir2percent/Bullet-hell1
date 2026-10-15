@@ -79,7 +79,7 @@ def create_orbit_circle(
 
         bullets.append(bullet)
 
-def fire_at_player(boss, player, bullets, speed=2.0):
+def fire_at_player(boss, player, bullets, speed):
     dx = player.x - boss.x
     dy = player.y - boss.y
 
@@ -267,3 +267,32 @@ def create_triangle_walls(
                 dx, dy,
                 speed=speed
             )
+
+
+def create_geometry_pattern(bullets, center_x, center_y, elapsed,
+                            vertex_count=4, base_radius=180, speed=4.0):
+    for i in range(vertex_count):
+        angle = (2 * math.pi * i / vertex_count) + elapsed * 0.5
+
+        # Each vertex moves in and out at a different rate.
+        radius = base_radius + math.sin(elapsed * 3 + i * 1.5) * 100
+
+        # Calculate the current vertex position.
+        x = center_x + math.cos(angle) * radius
+        y = center_y + math.sin(angle) * radius
+
+        # Aim the bullet toward the centre.
+        dx = center_x - x
+        dy = center_y - y
+        distance = math.hypot(dx, dy)
+
+        if distance == 0:
+            continue
+
+        dx /= distance
+        dy /= distance
+
+        bullets.append(
+            Bullet(x, y, dx, dy, speed=speed, radius=5)
+        )
+

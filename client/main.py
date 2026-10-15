@@ -26,8 +26,10 @@ from game.formations import (
 pygame.init()
 
 pygame.mixer.music.load("assets/Sounds/govnovoz.mp3")
-pygame.mixer.music.set_volume(0.5)  # Volume: 0.0–1.0
+pygame.mixer.music.set_volume(1)  # Volume: 0.0–1.0
 pygame.mixer.music.play(-1)         # -1 means loop forever
+
+play_second_S = False
 
 SCREEN_WIDTH = 1080
 SCREEN_HEIGHT = 800
@@ -251,6 +253,12 @@ while running:
         # --------------------
 
         hp_ratio = boss.get_hp_ratio()
+
+        if hp_ratio <= 0.5 and not play_second_S:
+            pygame.mixer.music.load("assets/Sounds/HUINYA.mp3")
+            pygame.mixer.music.set_volume(3)
+            pygame.mixer.music.play(-1)
+            play_second_S = True
 
         if hp_ratio > 0.75:
             # Phase 1: orbiting rings and aimed shots

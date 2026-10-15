@@ -1,24 +1,137 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Bullet Hell Leaderboard</title>
-    <link rel="stylesheet" href="/static/style.css">
-</head>
-<body>
-    <h1>Bullet Hell Leaderboard</h1>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Leaderboard | Battle of Compensation</title>
 
-    <table>
-        <tr>
-            <th>Rank</th>
-            <th>Player</th>
-            <th>Score</th>
-        </tr>
-        <tr>
-            <td>1</td>
-            <td>Player1</td>
-            <td>15000</td>
-        </tr>
-    </table>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Roboto+Condensed:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../static/style.css">
+</head>
+<body class="lb-page">
+
+  <header class="site-header">
+    <a class="brand" href="leaderboard.html">
+      <span class="brand-icon">🌳</span>
+      <span>
+        <strong>BATTLE OF <em>COMPENSATION</em></strong>
+        <small>YES, THIS IS AN ACTUAL GAME</small>
+      </span>
+    </a>
+
+    <nav class="header-nav">
+      <a class="nav-btn" href="rules.html">📜 HOW TO PLAY</a>
+    </nav>
+  </header>
+
+  <main class="lb-container">
+    <section class="page-hero">
+      <span class="eyebrow">HALL OF LEGENDS</span>
+      <h1>PLAYER <span>RANKINGS</span></h1>
+      <p>Big scores, boss fights, and questionable life choices.</p>
+    </section>
+
+    <section class="lb-board">
+      <div class="lb-board-heading">
+        <span class="board-symbol">♛</span>
+        <h2>TOP 5 PLAYERS</h2>
+        <p>WHO'S ACTUALLY GOOD AT THIS GAME?</p>
+      </div>
+
+      <div class="lb-table-wrap">
+        <table class="lb-table">
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Player</th>
+              <th>Score</th>
+              <th class="lb-center">Boss Defeated</th>
+            </tr>
+          </thead>
+          <tbody id="leaderboard-body"></tbody>
+        </table>
+      </div>
+
+      <div class="lb-board-footer">
+        <span>⚔ MAY THE BEST PLAYER WIN</span>
+        <span>🏆 TOP 5</span>
+      </div>
+    </section>
+
+    <p class="lb-footnote">
+      Play fair, defeat the boss, and try not to embarrass yourself.
+    </p>
+  </main>
+
+  <script>
+    // Example data. Replace with your actual game results.
+    const players = [
+      { username: "ForestKing", score: 245800, defeatedBoss: true },
+      { username: "ShadowHunter", score: 198450, defeatedBoss: true },
+      { username: "DarkWarden", score: 176200, defeatedBoss: false },
+      { username: "RangerJoe", score: 154900, defeatedBoss: true },
+      { username: "IronFist", score: 132650, defeatedBoss: false },
+      { username: "MossGoblin", score: 98700, defeatedBoss: false }
+    ];
+
+    const tbody = document.getElementById("leaderboard-body");
+
+    players
+      .slice()
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 5)
+      .forEach((player, index) => {
+        const row = document.createElement("tr");
+        row.classList.add(`lb-rank-${index + 1}`);
+
+        const rankSymbols = ["🥇", "🥈", "🥉"];
+        const rank = rankSymbols[index] || `#${index + 1}`;
+
+        const rankCell = document.createElement("td");
+        rankCell.className = "lb-rank";
+        rankCell.textContent = rank;
+
+        const playerCell = document.createElement("td");
+        const playerInfo = document.createElement("div");
+        playerInfo.className = "lb-player";
+
+        const avatar = document.createElement("div");
+        avatar.className = "lb-avatar";
+        avatar.textContent = player.username.charAt(0).toUpperCase();
+
+        const playerText = document.createElement("div");
+        const username = document.createElement("span");
+        username.className = "lb-username";
+        username.textContent = player.username;
+
+        const label = document.createElement("span");
+        label.className = "lb-player-label";
+        label.textContent = `PLAYER #${index + 1}`;
+
+        playerText.append(username, label);
+        playerInfo.append(avatar, playerText);
+        playerCell.append(playerInfo);
+
+        const scoreCell = document.createElement("td");
+        scoreCell.className = "lb-score";
+        scoreCell.textContent = player.score.toLocaleString("en-US");
+
+        const bossCell = document.createElement("td");
+        bossCell.className = "lb-center";
+
+        const status = document.createElement("span");
+        status.className = player.defeatedBoss
+          ? "lb-status lb-yes"
+          : "lb-status lb-no";
+        status.textContent = player.defeatedBoss ? "YES" : "NO";
+
+        bossCell.append(status);
+        row.append(rankCell, playerCell, scoreCell, bossCell);
+        tbody.append(row);
+      });
+  </script>
+
 </body>
 </html>

@@ -1,21 +1,852 @@
+
+/* ==================================================
+   BATTLE OF COMPENSATION
+   ONE SHARED STYLESHEET
+   ================================================== */
+
+:root {
+  --game-gold: #e8b34d;
+  --game-red: #d94a3d;
+  --game-green: #42d875;
+  --game-cream: #f4eee0;
+  --game-muted: #b2a996;
+  --game-border: #70553a;
+  --game-panel: #211e16;
+}
+
+* {
+  box-sizing: border-box;
+}
+
 body {
-    background-color: #171724;
-    color: white;
-    font-family: Arial, sans-serif;
+  margin: 0;
+  min-height: 100vh;
+  color: var(--game-cream);
+  font-family: "Roboto Condensed", sans-serif;
+
+  background:
+    linear-gradient(90deg, #040a05c9, #04090585),
+    linear-gradient(0deg, #030804dd, transparent 85%),
+    url("../../assets/ogorod.png") center / cover fixed,
+    #101a10;
+}
+
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button,
+a {
+  font-family: inherit;
+}
+
+/* ==================================================
+   SHARED HEADER AND NAVIGATION
+   ================================================== */
+
+.site-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+
+  padding: 22px 5%;
+  background: #080d08b8;
+  border-bottom: 1px solid #c6a16b44;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  color: var(--game-cream);
+  text-decoration: none;
+}
+
+.brand-icon {
+  font-size: 37px;
+  filter: drop-shadow(0 3px 4px #000);
+}
+
+.brand strong {
+  display: block;
+  font: 700 clamp(16px, 2.5vw, 26px)/1.2 "Oswald", sans-serif;
+}
+
+.brand em {
+  color: var(--game-red);
+  font-style: normal;
+}
+
+.brand small {
+  display: block;
+  margin-top: 5px;
+  color: var(--game-muted);
+  font-size: 9px;
+  letter-spacing: 2px;
+}
+
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nav-btn {
+  display: inline-block;
+  padding: 11px 15px;
+
+  background: linear-gradient(#a8362e, #79221d);
+  border: 2px solid #ead6b8;
+
+  color: white;
+  text-decoration: none;
+  text-align: center;
+  white-space: nowrap;
+
+  font: 600 12px "Oswald", sans-serif;
+  letter-spacing: 1px;
+
+  transition: background .2s, transform .2s;
+}
+
+.nav-btn:hover {
+  background: #c43c32;
+  transform: translateY(-2px);
+}
+
+/* ==================================================
+   SHARED PAGE TITLES
+   ================================================== */
+
+.page-hero {
+  padding: 42px 10px 30px;
+  text-align: center;
+}
+
+.eyebrow {
+  color: var(--game-gold);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 3px;
+}
+
+.page-hero h1 {
+  margin: 10px 0;
+  font: 700 clamp(38px, 6vw, 60px)/1.1 "Oswald", sans-serif;
+  text-shadow: 0 4px 15px #000;
+}
+
+.page-hero h1 span {
+  color: var(--game-red);
+}
+
+.page-hero > p {
+  margin: 12px 0 0;
+  color: #d0c9b9;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.site-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+
+  padding: 25px 0;
+  color: #b3ab9b;
+
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  line-height: 1.7;
+}
+
+/* ==================================================
+   LEADERBOARD PAGE
+   ================================================== */
+
+.lb-container {
+  width: min(1050px, 92%);
+  margin: auto;
+}
+
+.lb-board {
+  position: relative;
+  overflow: hidden;
+
+  background:
+    repeating-linear-gradient(
+      2deg,
+      transparent 0 25px,
+      #ffffff04 26px 28px
+    ),
+    linear-gradient(115deg, #35271b, #171711 45%, #2c2117);
+
+  border: 2px solid var(--game-border);
+  box-shadow:
+    0 22px 60px #000b,
+    inset 0 0 0 5px #17120b,
+    inset 0 0 25px #000;
+}
+
+.lb-board::before,
+.lb-board::after {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  bottom: 0;
+  width: 7px;
+
+  background: repeating-linear-gradient(
+    0deg,
+    #66503a 0 3px,
+    #21180f 3px 7px
+  );
+
+  pointer-events: none;
+}
+
+.lb-board::before {
+  left: 0;
+}
+
+.lb-board::after {
+  right: 0;
+}
+
+.lb-board-heading {
+  padding: 25px 15px 22px;
+  text-align: center;
+
+  background: linear-gradient(
+    90deg,
+    transparent,
+    #a42d2733,
+    transparent
+  );
+
+  border-bottom: 2px solid #80623c;
+}
+
+.board-symbol {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--game-gold);
+  font-size: 30px;
+}
+
+.lb-board-heading h2 {
+  display: inline-block;
+  margin: 0;
+  padding: 2px 24px 7px;
+
+  border-bottom: 4px solid var(--game-red);
+
+  color: #fff8e9;
+  font: 700 clamp(25px, 4vw, 40px) "Oswald", sans-serif;
+}
+
+.lb-board-heading p {
+  margin: 14px 0 0;
+  color: #c5bba6;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.lb-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.lb-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.lb-table thead {
+  background: #0004;
+}
+
+.lb-table th {
+  padding: 16px 15px;
+
+  color: #b9ad98;
+  font: 600 12px "Oswald", sans-serif;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+
+  border-bottom: 1px solid #73563a;
+}
+
+.lb-table td {
+  padding: 14px 15px;
+  border-bottom: 1px solid #92745355;
+  font-size: 15px;
+}
+
+.lb-table tbody tr {
+  transition: background .2s;
+}
+
+.lb-table tbody tr:hover {
+  background: #ffffff0c;
+}
+
+.lb-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.lb-center {
+  text-align: center;
+  white-space: nowrap;
+}
+
+.lb-rank {
+  width: 85px;
+  text-align: center;
+  white-space: nowrap;
+  font-size: 23px !important;
+}
+
+.lb-rank-1 {
+  background: linear-gradient(90deg, #b9862524, #d5a74c0c);
+}
+
+.lb-rank-1 td {
+  border-top: 1px solid #d5a74c;
+  border-bottom: 1px solid #d5a74c;
+}
+
+.lb-player {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 170px;
+}
+
+.lb-avatar {
+  display: grid;
+  place-items: center;
+  flex: 0 0 44px;
+
+  width: 44px;
+  height: 44px;
+
+  background: linear-gradient(145deg, #59644a, #25291d);
+  border: 1px solid #99805a;
+  box-shadow: inset 0 0 0 2px #0004;
+
+  color: #f8e6c3;
+  font: 700 21px "Oswald", sans-serif;
+}
+
+.lb-rank-1 .lb-avatar {
+  background: linear-gradient(145deg, #86692d, #362819);
+  border: 2px solid var(--game-gold);
+}
+
+.lb-username {
+  display: block;
+  color: #f8f2e7;
+  font-size: 16px;
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+
+.lb-player-label {
+  display: block;
+  margin-top: 4px;
+
+  color: #a99c86;
+  font-size: 10px;
+  letter-spacing: 1.3px;
+}
+
+.lb-score {
+  color: #f5eddf;
+  font: 700 22px "Oswald", sans-serif;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.lb-rank-1 .lb-score {
+  color: var(--game-gold);
+}
+
+.lb-status {
+  display: inline-block;
+  min-width: 60px;
+  padding: 7px 11px;
+
+  color: white;
+  text-align: center;
+  font: 700 12px "Oswald", sans-serif;
+  letter-spacing: 1px;
+
+  box-shadow: 0 2px 6px #0006;
+}
+
+.lb-yes {
+  background: linear-gradient(135deg, #238c43, #12652d);
+  border: 1px solid #4ac66b;
+}
+
+.lb-no {
+  background: linear-gradient(135deg, #c83e43, #8e2028);
+  border: 1px solid #ed7474;
+}
+
+.lb-board-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  padding: 16px 23px;
+
+  background: #0004;
+  border-top: 2px solid #765b3b;
+
+  color: #c0b39d;
+  font: 600 11px "Oswald", sans-serif;
+  letter-spacing: 1px;
+}
+
+.lb-footnote {
+  padding: 0 10px 24px;
+  color: #c2bba9;
+  text-align: center;
+  font-size: 12px;
+}
+
+/* ==================================================
+   RULES PAGE
+   ================================================== */
+
+.rules-container {
+  width: min(1050px, 92%);
+  margin: auto;
+}
+
+.rules-intro,
+.rules-tip {
+  display: flex;
+  align-items: flex-start;
+  gap: 17px;
+
+  padding: 22px;
+
+  background: linear-gradient(110deg, #493522ed, #171a13f5);
+  border: 1px solid #92734a;
+  box-shadow: 0 8px 25px #0005;
+}
+
+.rules-intro {
+  margin-bottom: 22px;
+  border-left: 4px solid var(--game-gold);
+}
+
+.rules-big-icon,
+.rules-tip-icon {
+  flex-shrink: 0;
+  font-size: 30px;
+}
+
+.rules-intro h2,
+.rules-tip h2 {
+  margin: 0 0 8px;
+  font: 600 20px "Oswald", sans-serif;
+}
+
+.rules-intro p,
+.rules-tip p {
+  margin: 0;
+  color: #d0c9ba;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.rules-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.rules-card {
+  position: relative;
+  overflow: hidden;
+  padding: 23px;
+
+  background:
+    repeating-linear-gradient(
+      2deg,
+      transparent 0 23px,
+      #ffffff03 24px 26px
+    ),
+    linear-gradient(135deg, #30271d, #151a13 75%);
+
+  border: 1px solid #6b5338;
+  box-shadow: 0 12px 28px #0006;
+
+  transition: transform .2s, border-color .2s;
+}
+
+.rules-card:hover {
+  transform: translateY(-3px);
+  border-color: #ae8753;
+}
+
+.rules-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 3px;
+
+  background: #88704c;
+}
+
+.rules-controls::before {
+  background: var(--game-gold);
+}
+
+.rules-mechanics::before {
+  background: #6f9871;
+}
+
+.rules-victory::before {
+  background: var(--game-green);
+}
+
+.rules-defeat::before {
+  background: var(--game-red);
+}
+
+.rules-card-heading {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+
+  margin-bottom: 17px;
+  padding-bottom: 17px;
+
+  border-bottom: 1px solid #b9a17b33;
+}
+
+.rules-icon {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+
+  width: 45px;
+  height: 45px;
+
+  background: #0004;
+  border: 1px solid #b9a17b55;
+
+  font-size: 23px;
+}
+
+.rules-label {
+  color: var(--game-gold);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.rules-card-heading h2 {
+  margin: 5px 0 0;
+  font: 600 21px "Oswald", sans-serif;
+}
+
+/* Rules controls */
+
+.rules-key-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  margin-bottom: 14px;
+}
+
+.rules-keys {
+  display: flex;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.rules-keys kbd {
+  display: inline-block;
+  min-width: 28px;
+  padding: 7px 6px;
+
+  color: #fff4dd;
+  background: #090b08;
+
+  border: 1px solid #89734f;
+  border-bottom: 3px solid #89734f;
+  border-radius: 4px;
+
+  text-align: center;
+  font: 700 11px "Roboto Condensed", sans-serif;
+}
+
+.rules-key-row p {
+  flex: 1;
+  margin: 0;
+
+  color: #ddd6c8;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.rules-note {
+  margin: 16px 0 0;
+  padding-top: 12px;
+
+  border-top: 1px solid #ffffff15;
+
+  color: #b9ac97;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+/* Rules lists */
+
+.rules-card ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.rules-card li {
+  padding: 0 0 12px 3px;
+
+  color: #ddd6c8;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.rules-card li::marker {
+  color: var(--game-gold);
+}
+
+/* Victory and defeat labels */
+
+.rules-stamp {
+  display: inline-block;
+  margin-bottom: 17px;
+  padding: 7px 13px;
+
+  font: 700 12px "Oswald", sans-serif;
+  letter-spacing: 1px;
+
+  transform: rotate(-2deg);
+}
+
+.rules-win-stamp {
+  color: #8bf2a5;
+  background: #16753535;
+  border: 1px solid #42c66b88;
+}
+
+.rules-lose-stamp {
+  color: #ff9892;
+  background: #a3222235;
+  border: 1px solid #e34b4b88;
+}
+
+.rules-green {
+  color: var(--game-green);
+}
+
+.rules-red {
+  color: #ff6868;
+}
+
+/* Rules tip */
+
+.rules-tip {
+  margin-top: 22px;
+  border-left: 4px solid var(--game-red);
+}
+
+/* ==================================================
+   RESPONSIVE DESIGN
+   ================================================== */
+
+@media (max-width: 700px) {
+  .site-header {
+    padding: 16px 4%;
+    gap: 10px;
+  }
+
+  .brand {
+    gap: 8px;
+  }
+
+  .brand-icon {
+    font-size: 27px;
+  }
+
+  .brand strong {
+    font-size: 15px;
+  }
+
+  .brand small {
+    font-size: 7px;
+    letter-spacing: 1px;
+  }
+
+  .nav-btn {
+    padding: 9px 8px;
+    font-size: 9px;
+    letter-spacing: .5px;
+  }
+
+  .page-hero {
+    padding: 32px 8px 25px;
+  }
+
+  .page-hero > p {
+    font-size: 13px;
+  }
+
+  .lb-container,
+  .rules-container {
+    width: 95%;
+  }
+
+  /* Leaderboard mobile */
+
+  .lb-table th {
+    padding: 13px 9px;
+    font-size: 10px;
+    letter-spacing: .5px;
+  }
+
+  .lb-table td {
+    padding: 12px 9px;
+  }
+
+  .lb-rank {
+    width: 50px;
+    font-size: 17px !important;
+  }
+
+  .lb-player {
+    min-width: 145px;
+    gap: 8px;
+  }
+
+  .lb-avatar {
+    flex-basis: 35px;
+    width: 35px;
+    height: 35px;
+    font-size: 17px;
+  }
+
+  .lb-username {
+    font-size: 13px;
+  }
+
+  .lb-player-label {
+    font-size: 9px;
+  }
+
+  .lb-score {
+    font-size: 17px;
+  }
+
+  .lb-status {
+    min-width: 43px;
+    padding: 6px 7px;
+    font-size: 11px;
+  }
+
+  .lb-board-footer {
+    padding: 14px 12px;
+    font-size: 9px;
+    letter-spacing: .5px;
+  }
+
+  /* Rules mobile */
+
+  .rules-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .rules-card {
+    padding: 19px;
+  }
+
+  .rules-intro,
+  .rules-tip {
+    padding: 17px;
+    gap: 12px;
+  }
+
+  .rules-key-row {
+    gap: 8px;
+  }
+
+  .rules-keys kbd {
+    min-width: 25px;
+    padding: 7px 5px;
+  }
+
+  .rules-key-row p {
+    font-size: 12px;
+  }
+
+  .site-footer {
+    flex-direction: column;
     text-align: center;
+    padding: 22px 0;
+    gap: 7px;
+  }
 }
 
-table {
-    margin: 20px auto;
-    border-collapse: collapse;
-    width: 60%;
-}
+@media (max-width: 390px) {
+  .brand strong {
+    font-size: 13px;
+  }
 
-th, td {
-    padding: 12px;
-    border: 1px solid #555577;
-}
+  .brand small {
+    font-size: 6px;
+  }
 
-th {
-    background-color: #39395c;
+  .brand-icon {
+    font-size: 23px;
+  }
+
+  .nav-btn {
+    padding: 8px 6px;
+    font-size: 8px;
+  }
+
+  .lb-table th,
+  .lb-table td {
+    padding-left: 6px;
+    padding-right: 6px;
+  }
+
+  .lb-player {
+    min-width: 125px;
+  }
+
+  .lb-score {
+    font-size: 15px;
+  }
+
+  .lb-status {
+    min-width: 37px;
+    padding: 5px;
+  }
 }

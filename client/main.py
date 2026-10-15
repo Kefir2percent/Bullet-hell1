@@ -31,6 +31,8 @@ pygame.mixer.music.play(-1)         # -1 means loop forever
 
 play_second_S = False
 
+Play_third_S = False
+
 SCREEN_WIDTH = 1080
 SCREEN_HEIGHT = 800
 FPS = 60
@@ -259,6 +261,12 @@ while running:
             pygame.mixer.music.set_volume(3)
             pygame.mixer.music.play(-1)
             play_second_S = True
+
+        if hp_ratio <= 0.25 and not Play_third_S:
+            pygame.mixer.music.load("assets/Sounds/FNAF.mp3")
+            pygame.mixer.music.set_volume(3)
+            pygame.mixer.music.play(-1)
+            Play_third_S = True
 
         if hp_ratio > 0.75:
             # Phase 1: orbiting rings and aimed shots

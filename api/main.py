@@ -27,3 +27,11 @@ async def leaderboard(request: Request):
         name="leaderboard.html",
         context={}
     )
+
+@app.get("/rules")
+async def rules(request: Request):
+    return templates.TemplateResponse(
+        request=request,
+        name="rules.html",
+        context={}
+    )

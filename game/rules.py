@@ -236,9 +236,9 @@ def handle_player_damage(player, enemy_bullets, start_x, start_y):
 
 
 def use_bomb(player, enemy_bullets):
-    if player.score >= 1000:
+    if player.score >= 10000:
         enemy_bullets.clear()
-        player.score -= 1000
+        player.score -= 2000
         return True
 
     return False

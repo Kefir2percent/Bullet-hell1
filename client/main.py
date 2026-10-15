@@ -167,7 +167,7 @@ while running:
             elif event.key == pygame.K_x:
                 if game_state == "playing" and not game_over:
                     if use_bomb(player, B_bullets):
-                        bomb_penalty += 1000
+                        bomb_penalty += 2000
 
                                 
 
@@ -264,7 +264,7 @@ while running:
 
         if hp_ratio <= 0.25 and not Play_third_S:
             pygame.mixer.music.load("assets/Sounds/FNAF.mp3")
-            pygame.mixer.music.set_volume(3)
+            pygame.mixer.music.set_volume(2)
             pygame.mixer.music.play(-1)
             Play_third_S = True
 
@@ -423,8 +423,6 @@ while running:
         ):
             player.take_damage()
             
-
-
             if player.lives <= 0:
                 game_over = True
 
@@ -439,7 +437,6 @@ while running:
         elif player.lives <= 0:
             victory = False
             game_over = True
-
 
     # --------------------
     # Drawing

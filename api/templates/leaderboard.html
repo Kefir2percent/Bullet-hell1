@@ -1,19 +1,13 @@
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Leaderboard | Battle of Compensation</title>
+{% extends "base.html" %}
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Roboto+Condensed:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../static/style.css">
-</head>
-<body class="lb-page">
+{% block title %}Leaderboard | Battle of Compensation{% endblock %}
+
+{% block page_content %}
+
 
   <header class="site-header">
-    <a class="brand" href="leaderboard.html">
+    <a class="brand" href="/">
       <span class="brand-icon">🌳</span>
       <span>
         <strong>BATTLE OF <em>COMPENSATION</em></strong>
@@ -21,8 +15,10 @@
       </span>
     </a>
 
+
+
     <nav class="header-nav">
-      <a class="nav-btn" href="rules.html">📜 HOW TO PLAY</a>
+      <a class="nav-btn" href="/rules">📜 HOW TO PLAY</a>
     </nav>
   </header>
 
@@ -132,6 +128,4 @@
         tbody.append(row);
       });
   </script>
-
-</body>
-</html>
+{% endblock %}

@@ -1,29 +1,22 @@
+{% extends "base.html" %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>How to Play | Battle of Compensation</title>
+{% block title %}Rules | Battle of Compensation{% endblock %}
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Roboto+Condensed:wght@400;600;700;800&display=swap" rel="stylesheet">
+{% block page_content %}
 
-  <link rel="stylesheet" href="../static/style.css">
-</head>
-
-<body>
   <header class="site-header">
-    <a href="leaderboard.html" class="brand">
+    <a href="/" class="brand">
       <span class="brand-icon">🌳</span>
       <span>
         <strong>BATTLE OF <em>COMPENSATION</em></strong>
         <small>YES, THIS IS AN ACTUAL GAME</small>
       </span>
     </a>
+    <a href="/" class="leaderboard-btn">LEADERBOARD</a>
 
-    <a href="index.html" class="back-btn">← BACK TO GAME</a>
   </header>
+
+
 
   <main class="container">
     <section class="hero">
@@ -35,9 +28,9 @@
     <section class="intro-panel">
       <span class="intro-icon">👋</span>
       <div>
-        <h2>WELCOME TO THE GARDEN</h2>
+        <h2>WELCOME TO THE Šleser's GARDEN</h2>
         <p>
-          Your mission is pretty simple: run around, fight the boss,
+          Your mission is pretty simple: run around, fight the Šleser,
           try not to die, and get the biggest score you can.
           Easy, right? Probably not.
         </p>
@@ -56,24 +49,26 @@
         </div>
 
         <div class="rule-list">
-          <div class="rule-row">
-            <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd>
-            <p>Move around. Touch grass, literally.</p>
-          </div>
+          
 
           <div class="rule-row">
             <kbd>↑</kbd><kbd>←</kbd><kbd>↓</kbd><kbd>→</kbd>
-            <p>Also works for moving, if that's your thing.</p>
+            <p>Movement controls</p>
           </div>
 
           <div class="rule-row">
-            <kbd>SPACE</kbd>
-            <p>Attack the boss. Make it regret everything.</p>
+            <kbd>Z</kbd>
+            <p>Attack the boss. Thats all :/</p>
           </div>
 
           <div class="rule-row">
             <kbd>ESC</kbd>
-            <p>Pause the game. Take a deep breath.</p>
+            <p>Pause the game. Did you expected something more?.</p>
+          </div>
+
+          <div class="rule-now">
+            <kbd>SHIFT</kbd>
+            <p>Makes you a slower. Use it to make easier to dodge during difficult parts</p>
           </div>
         </div>
 
@@ -93,11 +88,10 @@
         </div>
 
         <ul>
-          <li>Move around the garden. It's not going to explore itself.</li>
-          <li>Find the boss and start the fight.</li>
-          <li>Hit the boss to make its HP go down.</li>
-          <li>Try not to get hit too much. You're not invincible.</li>
-          <li>Earn points and see how high you can climb on the leaderboard.</li>
+          <li>Score is crucial during the game-time. Try not to waste 'em beforehand</li>
+          <li>You get short I-Frame duration after death, and get 25% of score to be cut off</li>
+          <li>Bombs are needed to clear intense bullet patterns. Requirements: at least 10k score (any moment below 10k you are restricted from using a bomb), cost per bomb is 2k and activated with "X" </li>
+          <li>During the fight, you have 25 lives in total.</li>
         </ul>
       </article>
 
@@ -134,31 +128,20 @@
 
         <ul>
           <li>Run out of lives before defeating the boss.</li>
-          <li>Stare at the screen for a moment. It's okay.</li>
           <li>Your boss status becomes <strong class="red">NO</strong>.</li>
-          <li>Your final score is recorded, if score saving is enabled.</li>
+          <li>Your final score is recorded.</li>
           <li>Try again. The boss isn't going to beat itself.</li>
         </ul>
       </article>
 
     </section>
 
-    <section class="tip-panel">
-      <span>💡</span>
-      <div>
-        <h2>PRO TIP (TOTALLY LEGIT)</h2>
-        <p>
-          Don't stand still and let the boss turn you into garden
-          decoration. Keep moving, keep attacking, and maybe —
-          just maybe — you'll survive.
-        </p>
-      </div>
-    </section>
 
     <footer>
       <span>🌱 BATTLE OF COMPENSATION</span>
       <span>GOOD LUCK. YOU'LL PROBABLY NEED IT.</span>
     </footer>
   </main>
-</body>
-</html>
+
+
+{% endblock %}

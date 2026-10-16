@@ -69,3 +69,17 @@ def get_player_best_score(username):
     connection.close()
     return result[0]
 
+def get_player_boss_status(username):
+    connection = get_connection()
+
+    result = connection.execute(
+        """
+        SELECT MAX(boss_defeated)
+        FROM game_runs
+        WHERE username = ?
+        """,
+        (username,)
+    ).fetchone()
+
+    connection.close()
+    return bool(result[0]) if result[0] is not None else False

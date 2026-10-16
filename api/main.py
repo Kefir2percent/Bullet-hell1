@@ -7,7 +7,7 @@ from fastapi import FastAPI, Request
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 
-from api.db import init_db, get_leaderboard, get_player_best_score, save_game_run
+from api.db import init_db, get_leaderboard, get_player_best_score, save_game_run, get_player_boss_status
 
 BASE_DIR = Path(__file__).resolve().parent
 
@@ -86,3 +86,21 @@ async def submit_score(result: GameResult):
         result.boss_defeated
     )
     return {"message": "Score saved"}
+
+
+@app.get("/players/{name}")
+async def player_profile(request: Request, name: str):
+    best_score = get_player_best_score(name)
+    defeated_boss = get_player_boss_status(name)
+
+    player = {
+        "username": name,
+        "score": best_score,
+        "defeated_boss": defeated_boss
+    }
+
+    return templates.TemplateResponse(
+        request=request,
+        name="player.html",
+        context={"player": player}
+    )

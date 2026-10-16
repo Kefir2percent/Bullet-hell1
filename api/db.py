@@ -83,3 +83,20 @@ def get_player_boss_status(username):
 
     connection.close()
     return bool(result[0]) if result[0] is not None else False
+
+def debug_game_runs(username):
+    connection = get_connection()
+
+    results = connection.execute(
+        """
+        SELECT username, score, boss_defeated
+        FROM game_runs
+        WHERE username = ?
+        ORDER BY id DESC
+        LIMIT 5
+        """,
+        (username,)
+    ).fetchall()
+
+    connection.close()
+    print("Saved game runs:", results)

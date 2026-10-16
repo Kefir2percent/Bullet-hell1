@@ -447,6 +447,10 @@ while running:
 
         if game_over and not result_saved:
             try:
+                print("Submitting result:")
+                print("Username:", username)
+                print("Victory:", victory)
+                print("Boss HP:", boss.healthPoints)
                 response = requests.post(
                     "http://127.0.0.1:8000/submit-score",
                     json={

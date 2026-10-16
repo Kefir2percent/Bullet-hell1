@@ -47,7 +47,7 @@ Jinja2
 Requests
 
 Project structure
-
+```text
 Game_dev/
 ├── api/
 │   ├── main.py
@@ -61,7 +61,7 @@ Game_dev/
 ├── Dizains.docx
 ├── README.md
 └── requirements.txt
-
+```
 Requirements
 
 Python 3

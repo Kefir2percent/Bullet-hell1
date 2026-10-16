@@ -755,6 +755,22 @@ a {
   .lb-username {
     font-size: 13px;
   }
+  
+  .lb-table td a {
+    color: #f8f2e7;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.lb-table td a:hover {
+    color: var(--game-gold);
+    text-decoration: underline;
+}
+
+.lb-table td a:focus-visible {
+    outline: 2px solid var(--game-gold);
+    outline-offset: 3px;
+}
 
   .lb-player-label {
     font-size: 9px;
@@ -1212,26 +1228,54 @@ a {
 
 .leaderboard-btn {
     display: inline-block;
-    padding: 12px 18px;
-    background: var(--game-gold);
-    color: #211e16;
-    border: 2px solid #000;
-    box-shadow: 4px 4px 0 #000;
-    font-weight: 900;
-    font-size: 13px;
-    letter-spacing: 1px;
+    padding: 11px 15px;
+    background: linear-gradient(#a8362e, #79221d);
+    border: 2px solid #ead6b8;
+    color: white;
     text-decoration: none;
+    text-align: center;
+    font: 600 12px "Oswald", sans-serif;
+    letter-spacing: 1px;
     text-transform: uppercase;
-    transition: none;
+    transition: background 0.2s, transform 0.2s;
 }
 
 .leaderboard-btn:hover {
-    transform: translate(2px, 2px);
-    box-shadow: 2px 2px 0 #000;
-    background: var(--game-cream);
+    background: #c43c32;
+    transform: translateY(-2px);
 }
 
 .leaderboard-btn:focus-visible {
     outline: 3px solid var(--game-cream);
     outline-offset: 4px;
+}
+
+.player-statistics {
+    max-width: 500px;
+    margin: 30px auto;
+    padding: 24px;
+    box-sizing: border-box;
+
+    border: 2px solid white;
+    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.75);
+
+    color: white;
+    text-align: center;
+}
+
+.player-statistics p {
+    margin: 16px 0;
+}
+
+
+.lb-table td a,
+.lb-table td a:visited {
+    color: #f8f2e7;
+    text-decoration: none;
+}
+
+.lb-table td a:hover {
+    color: var(--game-gold);
+    text-decoration: underline;
 }

@@ -39,3 +39,33 @@ def save_game_run(username, score, boss_defeated):
     connection.commit()
     connection.close()
 
+
+def get_leaderboard():
+    connection = get_connection()
+
+    results = connection.execute("""
+        SELECT username, MAX(score) AS best_score
+        FROM game_runs
+        GROUP BY username
+        ORDER BY best_score DESC
+        LIMIT 5
+    """).fetchall()
+
+    connection.close()
+    return results
+
+def get_player_best_score(username):
+    connection = get_connection()
+
+    result = connection.execute(
+        """
+        SELECT MAX(score)
+        FROM game_runs
+        WHERE username = ?
+        """,
+        (username,)
+    ).fetchone()
+
+    connection.close()
+    return result[0]
+

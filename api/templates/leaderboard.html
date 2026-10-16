@@ -45,7 +45,21 @@
               <th>Score</th>
             </tr>
           </thead>
-          <tbody id="leaderboard-body"></tbody>
+          <tbody>
+              {% for username, score in scores %}
+              <tr>
+                  <td>{{ loop.index }}</td>
+                  <td>
+                      <a href="/players/{{ username }}">{{ username }}</a>
+                  </td>
+                  <td>{{ score }}</td>
+              </tr>
+              {% else %}
+              <tr>
+                  <td colspan="3">No scores yet.</td>
+              </tr>
+              {% endfor %}
+          </tbody>
         </table>
       </div>
 

@@ -1,6 +1,7 @@
 import time
 import pygame
 import string
+import requests
 
 from game.rules import (
     Player,
@@ -125,6 +126,8 @@ last_geometry_time = 0
 running = True
 game_over = False
 victory = False
+
+result_saved = False
 
 game_state = "menu"  # menu, playing, paused
 
@@ -441,6 +444,25 @@ while running:
         elif player.lives <= 0:
             victory = False
             game_over = True
+
+        if game_over and not result_saved:
+            try:
+                response = requests.post(
+                    "http://127.0.0.1:8000/submit-score",
+                    json={
+                        "username": username,
+                        "score": player.score,
+                        "boss_defeated": victory,
+                    },
+                    timeout=3,
+                )
+                response.raise_for_status()
+                print("Score submitted successfully!")
+
+            except requests.RequestException as error:
+                print(f"Failed to submit score: {error}")
+
+            result_saved = True
 
     # --------------------
     # Drawing

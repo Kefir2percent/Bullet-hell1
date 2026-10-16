@@ -1,5 +1,6 @@
 
 from api.db import init_db, save_game_run, get_connection
+from api.db import get_leaderboard
 
 init_db()
 
@@ -11,5 +12,6 @@ results = connection.execute(
 ).fetchall()
 
 print(results)
+print(get_leaderboard())
 
 connection.close()

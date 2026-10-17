@@ -94,7 +94,7 @@ http://127.0.0.1:8000/
 
 To start the game, open a second terminal in the project root and run:
 ```bash
-python client/main.py
+python -m client.main
 ```
 
 The API server must be running for game results to be submitted to the leaderboard.

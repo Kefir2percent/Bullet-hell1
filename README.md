@@ -141,7 +141,6 @@ The server uses SQLite to store game results and retrieve player statistics. HTM
 
 The `/submit-score` endpoint expects a JSON request body containing `username`, `score`, and `boss_defeated`.
 
-Author
-
+## Author
 
 Created by Ralfs Riklāns and developed as a school project.

@@ -49,6 +49,7 @@ Requests
 Project structure
 ```text
 Game_dev/
+├── .gitignore
 ├── api/
 │   ├── main.py
 │   ├── db.py

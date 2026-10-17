@@ -125,6 +125,22 @@ Win: defeat the boss by reducing its health to zero.
 
 Lose: lose all player lives.
 
+## API Endpoints
+
+The server uses FastAPI to handle website requests and game score submissions.
+
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/` | Displays the leaderboard. |
+| GET | `/rules` | Displays the game rules. |
+| GET | `/players/{name}` | Displays a player's profile, best score, and boss defeat status. |
+| POST | `/submit-score` | Receives and saves a player's username, score, and boss defeat status. |
+| GET | `/docs` | Opens FastAPI's interactive API documentation. |
+
+The server uses SQLite to store game results and retrieve player statistics. HTML pages are rendered using Jinja2 templates.
+
+The `/submit-score` endpoint expects a JSON request body containing `username`, `score`, and `boss_defeated`.
+
 Author
 
 

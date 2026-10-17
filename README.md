@@ -49,19 +49,22 @@ Requests
 Project structure
 ```text
 Game_dev/
-├── .gitignore
 ├── api/
 │   ├── main.py
 │   ├── db.py
-│   ├── game.db
 │   ├── templates/
 │   └── static/
 ├── assets/
 ├── client/
 │   └── main.py
+├── game/
+│   ├── __init__.py
+│   ├── formations.py
+│   └── rules.py
 ├── Dizains.docx
 ├── README.md
-└── requirements.txt
+├── requirements.txt
+└── .gitignore
 ```
 
 Requirements

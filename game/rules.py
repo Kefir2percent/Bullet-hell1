@@ -1,5 +1,5 @@
 import time
-import random as r
+
 
 # --------------------
 # Game settings
@@ -86,7 +86,6 @@ class Player:
         self.Invaluability = True
         self.Invaluability_start_time = time.time()
 
-        print(f"Player took damage! Lives remaining: {self.lives}")
         
 
     def update_invulnerability(self):

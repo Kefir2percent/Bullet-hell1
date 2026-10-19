@@ -86,11 +86,6 @@ async def player_profile(request: Request, name: str):
     defeated_boss = get_player_boss_status(name)
 
 
-    print("PROFILE DEBUG:")
-    print("Requested username:", repr(name))
-    print("Best score:", best_score)
-    print("Boss status:", repr(defeated_boss))
-
     player = {
         "username": name,
         "score": best_score,

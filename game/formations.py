@@ -1,5 +1,4 @@
 import math
-import random
 from game.rules import SCREEN_WIDTH, SCREEN_HEIGHT
 from game.rules import Player, Bullet, Boss
 

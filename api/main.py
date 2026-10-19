@@ -7,7 +7,7 @@ from fastapi import FastAPI, Request
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 
-from api.db import init_db, get_leaderboard, get_player_best_score, save_game_run, get_player_boss_status, debug_game_runs
+from api.db import init_db, get_leaderboard, get_player_best_score, save_game_run, get_player_boss_status
 
 
 
@@ -76,8 +76,6 @@ async def submit_score(result: GameResult):
         result.score,
         result.boss_defeated
     )
-    debug_game_runs(result.username)
-    return {"message": "Score saved"}
 
 
 @app.get("/players/{name}")

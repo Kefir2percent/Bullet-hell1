@@ -9,7 +9,7 @@ from fastapi.staticfiles import StaticFiles
 
 from api.db import init_db, get_leaderboard, get_player_best_score, save_game_run, get_player_boss_status, debug_game_runs
 
-print("LOADED THE CORRECT api/main.py")
+
 
 BASE_DIR = Path(__file__).resolve().parent
 

@@ -76,6 +76,7 @@ async def submit_score(result: GameResult):
         result.score,
         result.boss_defeated
     )
+    return {"message": "Score saved"}
 
 
 @app.get("/players/{name}")
